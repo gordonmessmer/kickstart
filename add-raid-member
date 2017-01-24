@@ -1,0 +1,41 @@
+#!/bin/sh
+
+DRIVE="$1"
+
+function yesOrNo {
+        read -p "$1" -r
+        case $REPLY in
+                '') return 0  ;;
+                [yY]*) return 0 ;;
+                *) return 1  ;;
+        esac
+}
+
+function isUefi {
+	test -d /sys/firmware/efi
+}
+
+test -b /dev/${DRIVE} || { echo \"/dev/${DRIVE}\" not found ; exit 74 ; }
+
+echo WARNING: all data on this drive will be destroyed
+echo
+smartctl -i /dev/${DRIVE}
+echo
+yesOrNo "Continue to initialize this drive?" || exit
+
+parted -s /dev/${DRIVE} mklabel gpt \
+  mkpart primary ext4 1M 200M \
+  mkpart primary ext4 200M 1224M \
+  mkpart primary ext4 1224M 100%
+isUefi || parted -s /dev/${DRIVE} set 1 bios_grub on
+
+yesOrNo "Is this a boot drive?" && {
+    # On UEFI systems, add the first partition to the UEFI system partition volume
+    isUefi && mdadm /dev/md/efi --add /dev/${DRIVE}1
+    # On BIOS systems, install grub2 on the MBR
+    isUefi || grub2-install /dev/${DRIVE}
+    mdadm /dev/md/boot --add /dev/${DRIVE}2
+}
+
+mdadm /dev/md/primary --add /dev/${DRIVE}3
+
