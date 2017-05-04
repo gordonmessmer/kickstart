@@ -34,28 +34,13 @@ firstboot --disable
 %packages
 @base
 lvm2
-screen
+tmux
 strace
 ltrace
 gdb
 xorg-x11-xauth
 telnet
 epel-release
-bcfg2
-policycoreutils-python
-%end
-
-%post
-
-for x in $(cat /proc/cmdline)
-do
-	test "bcfg2=" = "${x:0:6}" || continue
-	bcfgauth="${x:6}"
-	bcfg2 -q -v -e -x "$bcfgauth" -u "$bcfgauth" -S https://config:6789
-	# A second run might be required if bcfg2 put a new file in yum.repos.d
-	bcfg2 -q -v -e
-done
-
 %end
 
 %pre
