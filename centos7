@@ -23,7 +23,7 @@ network  --bootproto=dhcp --device=eth0 --onboot=on
 auth  --useshadow
 
 # Firewall Configuration
-firewall --disabled
+firewall --enabled -ssh
 selinux --enforcing
 
 # Display Configuration
