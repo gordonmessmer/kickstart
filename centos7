@@ -41,6 +41,7 @@ ltrace
 gdb
 xorg-x11-xauth
 telnet
+policycoreutils-python
 epel-release
 %end
 
