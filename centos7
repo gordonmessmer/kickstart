@@ -45,6 +45,22 @@ policycoreutils-python
 epel-release
 %end
 
+%post
+
+case " $(cat /proc/cmdline)" in
+	*\ sshkey=\'*)
+		sshkey="$(cat /proc/cmdline)"
+		sshkey="${sshkey##*sshkey=\'}"
+		sshkey="${sshkey%%\'*}"
+		mkdir /root/.ssh
+		echo "$sshkey" >> /root/.ssh/authorized_keys
+		chmod 0700 /root/.ssh
+		chmod 0600 /root/.ssh/authorized_keys
+		;;
+esac
+
+%end
+
 %pre
 
 wipedisks() {
