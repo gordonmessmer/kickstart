@@ -1,6 +1,5 @@
 #version=RHEL8
 ignoredisk --only-use=vda
-autopart --type=lvm
 # Partition clearing information
 clearpart --none --initlabel
 # Use graphical install
