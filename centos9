@@ -137,8 +137,8 @@ ksbootpartition() {
 		else
 			echo "part /boot/efi --onpart=$(n_or_p ${drives[0]} 1) --fstype=efi --label EFI"
 		fi
-	#else
-	#	echo "part biosboot --onpart=$(n_or_p ${drives[0]} 1) --fstype=biosboot"
+	else
+		echo "part biosboot --onpart=$(n_or_p ${drives[0]} 1) --fstype=biosboot"
 	fi
 }
 
